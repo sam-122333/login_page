@@ -4,9 +4,13 @@ const app = express();
 
 dotenv.config({ path: "./config.env" });
 
+const PORT = process.env.PORT;
+
 //database
 require("./DB/connection");
 // const User = require("./models/userSchema");
+
+app.use(express.json());
 
 // linked the routes in app.js
 app.use(require("./routes/auth"));
@@ -32,6 +36,6 @@ app.get("/signup", (req, res) => {
   res.send("signup side running");
 });
 
-app.listen(4000, "localhost", () => {
-  console.log("server listen on port 4000");
+app.listen(PORT, "localhost", () => {
+  console.log(`server listen on port ${PORT}`);
 });
