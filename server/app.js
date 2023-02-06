@@ -1,6 +1,10 @@
+// import modules and packages
 const dotenv = require("dotenv");
 const express = require("express");
 const app = express();
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const helmet = require("helmet");
 
 dotenv.config({ path: "./config.env" });
 
@@ -12,6 +16,22 @@ require("./DB/connection");
 
 app.use(express.json());
 
+app.use(
+  express.urlencoded({
+    extended: false,
+  })
+);
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+// allow the app to use cookieparser
+app.use(cookieParser());
+app.use(helmet());
+
 // linked the routes in app.js
 app.use(require("./routes/auth"));
 
@@ -20,21 +40,21 @@ app.use(require("./routes/auth"));
 const middleware = (req, res, next) => {
   next();
 };
-app.get("/", middleware, (req, res) => {
-  res.send("home side running");
-});
-app.get("/about", middleware, (req, res) => {
-  res.send("about side running");
-});
-app.get("/contact", (req, res) => {
-  res.send("contact side running");
-});
-app.get("/signin", (req, res) => {
-  res.send("signin side running");
-});
-app.get("/signup", (req, res) => {
-  res.send("signup side running");
-});
+// app.get("/", middleware, (req, res) => {
+//   res.send("home side running");
+// });
+// app.get("/about", middleware, (req, res) => {
+//   res.send("about side running");
+// });
+// app.get("/contact", (req, res) => {
+//   res.send("contact side running");
+// });
+// app.get("/signin", (req, res) => {
+//   res.send("signin side running");
+// });
+// app.get("/signup", (req, res) => {
+//   res.send("signup side running");
+// });
 
 app.listen(PORT, "localhost", () => {
   console.log(`server listen on port ${PORT}`);
