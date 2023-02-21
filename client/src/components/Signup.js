@@ -8,7 +8,7 @@ const Signup = () => {
   const postData = async (e) => {
     e.preventDefault();
     const { name, email, phone, work, password, cpassword } = regUserData;
-    console.log(regUserData);
+    // console.log(regUserData);
     const response = await fetch("http://localhost:4000/register", {
       method: "POST",
       headers: {
@@ -19,10 +19,10 @@ const Signup = () => {
 
     if (response.status === 400 || response.status === 402 || !response) {
       window.alert("Something went wrong");
-      console.log("registration failed");
+      // console.log("registration failed");
     } else {
       window.alert("successfully registered");
-      console.log("registration successfully");
+      // console.log("registration successfully");
       setRegUserData({
         name: "",
         email: "",

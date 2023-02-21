@@ -1,13 +1,15 @@
+//import packages
 const express = require("express");
 const Authenticate = require("../middleware/authenticate");
 
 const router = express.Router();
 const User = require("../models/userSchema");
 const bcrypt = require("bcryptjs");
+const { response } = require("express");
 
-router.get("/", (req, res) => {
-  res.send("server side running router js");
-});
+// router.get("/", (req, res) => {
+//   res.send("server side running router js");
+// });
 
 //promise approach
 
@@ -52,8 +54,7 @@ router.post("/register", async (req, res) => {
     } else if (password !== cpassword) {
       return res.status(402).json({ message: "Password doesn't match" });
     } else {
-      console.log("saving the data");
-
+      // console.log("saving the data");
       const user = new User({
         name,
         email,
@@ -64,11 +65,11 @@ router.post("/register", async (req, res) => {
       });
       user.save();
 
-      console.log("data saved successfully");
+      // console.log("data saved successfully");
       return res.status(201).json({ message: "access granted" });
     }
   } catch (err) {
-    console.log(err.message);
+    // console.log(err.message);
   }
 });
 
@@ -86,18 +87,18 @@ router.post("/login", async (req, res) => {
     if (userExist) {
       const isMatch = await bcrypt.compare(password, userExist.password);
       const token = await userExist.generateAuthToken();
-      console.log(token);
+      // console.log(token);
       // res.cookie("jwtToken", token, {
       //   expires: new Date(Date.now() + 20000),
       //   httpOnly: true,
       // });
 
       if (!isMatch) {
-        res.status(400).json({ message: "invalid credential" });
+        res.status(401).json({ message: "invalid credential" });
       } else {
         res
           .cookie("jwtToken", token, {
-            expires: new Date(Date.now() + 20000),
+            expires: new Date(Date.now() + 2000000000),
             httpOnly: true,
             secure: true,
           })
@@ -108,15 +109,60 @@ router.post("/login", async (req, res) => {
       res.status(402).json({ message: "invalid credential" });
     }
   } catch (error) {
-    console.log(error.message);
+    // console.log(error.message);
   }
 });
 
 //about page
 
 router.get("/about", Authenticate, (req, res) => {
-  console.log("about page working");
-  res.send({ message: "about working successfully" });
+  // console.log("about page working");
+  res.send(req.rootUser);
+});
+
+//contact page
+
+router.post("/contact", Authenticate, async (req, res) => {
+  // console.log("contact page working");
+  try {
+    const { name, email, phone, message } = req.body;
+    if (!name || !email || !phone || !message) {
+      return res.status(400).json({ message: "Please fill all fields" });
+    }
+    // console.log(req.userId);
+    const userContact = await User.findOne({ _id: req.userId });
+    if (userContact) {
+      const userMessage = await userContact.addMessage(
+        name,
+        email,
+        phone,
+        message
+      );
+      await userContact.save();
+      res.status(201).json({ message: "message saved successfully" });
+    } else {
+      // console.log("page not working");
+      res.status(404).json({ message: "page not working" });
+    }
+  } catch (error) {
+    // console.log(error);
+    res.status(402).send(error.message);
+  }
+});
+
+// get data for home and contact page
+
+router.get("/getdata", Authenticate, async (req, res) => {
+  // console.log("fetching data");
+  res.send(req.rootUser);
+});
+
+//logout page
+
+router.get("/logout", (req, res) => {
+  // console.log("logout page working");
+  res.clearCookie("jwtToken");
+  res.status(200).send("user logged out");
 });
 
 module.exports = router;

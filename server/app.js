@@ -1,61 +1,41 @@
 // import modules and packages
-const dotenv = require("dotenv");
 const express = require("express");
-const app = express();
-const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv");
+const cors = require("cors");
 const helmet = require("helmet");
 
+//set up express
+const app = express();
+
+//setup config path
 dotenv.config({ path: "./config.env" });
 
-const PORT = process.env.PORT;
-
-//database
+//setup database
 require("./DB/connection");
-// const User = require("./models/userSchema");
 
+//
 app.use(express.json());
 
-app.use(
-  express.urlencoded({
-    extended: false,
-  })
-);
+// app.use(
+//   express.urlencoded({
+//     extended: false,
+//   })
+// );
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: true,
     credentials: true,
   })
 );
 
-// allow the app to use cookieparser
+// let’s you use the cookieParser in your application
 app.use(cookieParser());
 app.use(helmet());
 
 // linked the routes in app.js
 app.use(require("./routes/auth"));
 
-// middleware
-
-const middleware = (req, res, next) => {
-  next();
-};
-// app.get("/", middleware, (req, res) => {
-//   res.send("home side running");
-// });
-// app.get("/about", middleware, (req, res) => {
-//   res.send("about side running");
-// });
-// app.get("/contact", (req, res) => {
-//   res.send("contact side running");
-// });
-// app.get("/signin", (req, res) => {
-//   res.send("signin side running");
-// });
-// app.get("/signup", (req, res) => {
-//   res.send("signup side running");
-// });
-
-app.listen(PORT, "localhost", () => {
-  console.log(`server listen on port ${PORT}`);
+app.listen(process.env.PORT, "localhost", () => {
+  console.log(`server listen on port 4000`);
 });

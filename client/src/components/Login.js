@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   let history = useNavigate();
   const contextCellValue = useContext(contextCell);
-  const { handleLoginInputs, loginUserData } = contextCellValue;
+  const { handleLoginInputs, loginUserData, setLoginToggle } = contextCellValue;
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -14,20 +14,23 @@ const Login = () => {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        // httpOnly: true,
-        // withCredentials: true,
+        secure: true,
+        httpOnly: true,
+        withCredentials: true,
+        sameSite: "lax",
       },
-      // credentials: "include",
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
-    console.log(response);
+    // console.log(response);
 
     if (response.status === 400 || response.status === 402 || !response) {
       window.alert("Something went wrong");
-      console.log("login failed");
+      // console.log("login failed");
     } else {
+      setLoginToggle(false);
       window.alert("login successfully");
-      console.log("login successfully");
+      // console.log("login successfully");
       history("/");
     }
   };
