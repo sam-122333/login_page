@@ -22,13 +22,13 @@ const Login = () => {
       credentials: "include",
       body: JSON.stringify({ email, password }),
     });
-    // console.log(response);
+    console.log(response);
 
     if (response.status === 400 || response.status === 402 || !response) {
       window.alert("Something went wrong");
       // console.log("login failed");
     } else {
-      setLoginToggle(false);
+      setLoginToggle(true);
       window.alert("login successfully");
       // console.log("login successfully");
       history("/");

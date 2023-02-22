@@ -36,6 +36,14 @@ app.use(helmet());
 // linked the routes in app.js
 app.use(require("./routes/auth"));
 
-app.listen(process.env.PORT, "localhost", () => {
+const PORT = process.env.PORT || 4000;
+
+// set heroku
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
+app.listen(PORT, "localhost", () => {
   console.log(`server listen on port 4000`);
 });
