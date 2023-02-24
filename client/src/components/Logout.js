@@ -1,10 +1,10 @@
-import { useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
 import contextCell from "../useContext/contextCell";
+import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
   const contextCellValue = useContext(contextCell);
-  const { setLoginToggle } = contextCellValue;
+  const { setToggleLogin } = contextCellValue;
   let history = useNavigate();
   const callLogout = async () => {
     const res = await fetch("http://localhost:4000/logout", {
@@ -15,15 +15,19 @@ const Logout = () => {
       },
       credentials: "include",
     });
+    const data = await res.json();
     if (res.status !== 200) {
       window.alert("logout failed");
       // console.log("error found");
-    } else {
-      setLoginToggle(true);
+    } else if (!data.success) {
+      localStorage.removeItem("login");
+      setToggleLogin(false);
+
       window.alert("logout succeeded");
       history("/login");
     }
   };
+
   useEffect(() => {
     callLogout();
   });

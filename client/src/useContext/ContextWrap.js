@@ -47,8 +47,10 @@ const ContextWrap = (props) => {
     setContactUserData({ ...contactUserData, [e.target.name]: e.target.value });
   };
 
-  // login or logout toggle state
-  const [loginToggle, setLoginToggle] = useState("");
+  //login toggle
+  const [toggleLogin, setToggleLogin] = useState(
+    localStorage.getItem("login") === "true"
+  );
 
   return (
     <contextCell.Provider
@@ -58,7 +60,7 @@ const ContextWrap = (props) => {
         loginUserData,
         aboutUserData,
         contactUserData,
-        loginToggle,
+        toggleLogin,
         setPageName,
         handleRegInputs,
         handleLoginInputs,
@@ -66,7 +68,7 @@ const ContextWrap = (props) => {
         setAboutUserData,
         setContactUserData,
         handleContactInputs,
-        setLoginToggle,
+        setToggleLogin,
       }}
     >
       {props.children}

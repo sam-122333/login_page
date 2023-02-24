@@ -103,7 +103,7 @@ router.post("/login", async (req, res) => {
             secure: true,
           })
           .status(201)
-          .json({ message: "login success" });
+          .json({ message: "login success", success: true });
       }
     } else {
       res.status(402).json({ message: "invalid credential" });
@@ -162,7 +162,7 @@ router.get("/getdata", Authenticate, async (req, res) => {
 router.get("/logout", (req, res) => {
   // console.log("logout page working");
   res.clearCookie("jwtToken");
-  res.status(200).send("user logged out");
+  res.status(200).json({ success: false });
 });
 
 module.exports = router;

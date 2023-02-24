@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   let history = useNavigate();
   const contextCellValue = useContext(contextCell);
-  const { handleLoginInputs, loginUserData, setLoginToggle } = contextCellValue;
+  const { handleLoginInputs, loginUserData, setToggleLogin } = contextCellValue;
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -22,13 +22,15 @@ const Login = () => {
       credentials: "include",
       body: JSON.stringify({ email, password }),
     });
-    console.log(response);
+    const data = await response.json();
+    console.log(data.success, "hello");
 
     if (response.status === 400 || response.status === 402 || !response) {
       window.alert("Something went wrong");
       // console.log("login failed");
-    } else {
-      setLoginToggle(true);
+    } else if (data.success) {
+      localStorage.setItem("login", "true");
+      setToggleLogin(true);
       window.alert("login successfully");
       // console.log("login successfully");
       history("/");
